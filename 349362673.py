@@ -42,7 +42,7 @@ class Piece:
         # end of __str__
     
 	def __repr__(self):
-		""" Overrides the default representation to present a printable version of the Piece object """
+		""" Overrides the default representation method to present a printable version of the Piece object """
 		return self.__str__()
         # end of __repr__ 
     
@@ -103,17 +103,26 @@ class Board:
 		if not (0 <= from_pos[0] <= 7 and 0 <= from_pos[1] <= 7 and
                 0 <= to_pos[0] <= 7 and 0 <= to_pos[1] <= 7):
 			return False
-		chessPiece = self.board[from_pos[1]][from_pos[0]]
+		chess_piece = self.board[from_pos[1]][from_pos[0]]
 
         # Checks if square chosen is empty
-		if (chessPiece == " "):
+		if (chess_piece == " "):
 		    return False
         # Checks if piece chosen is the incorrect colour
-		if chessPiece.get_colour() == "black" and turn == True:
+		if chess_piece.get_colour() == "black" and turn == True:
 			return False
-		elif chessPiece.get_colour() == "white" and turn == False:
+		elif chess_piece.get_colour() == "white" and turn == False:
 			return False
+
+        # Checks if the square that the piece is moving to contains a piece of the same colour
+		move_to_square = self.board[to_pos[1]][to_pos[0]]
+		if (move_to_square != " "):
+			if (move_to_square.get_colour() == "black" and turn == False):
+				return False
+			elif (move_to_square.get_colour() == "white" and turn == True):
+				return False
 		return True
+
         # end of legal_move
 
 	def make_move(self, from_pos, to_pos, turn):
@@ -126,12 +135,15 @@ class Board:
 		else:
 			return False
         # end of make_move
-    
-    def play_game(self):
-        """ Runs a loop to allows a player to move pieces on a Chessboard until they choose to quit by entering -1 """
-        print("You are now playing a game, enter -1 to quit. Otherwise enter any number.")
+		
+	def play_game(self):
+		""" Runs a loop to allows a player to move pieces on a Chessboard until they choose to quit by entering -1 """
+		print("You are now playing a game, enter -1 to quit. Otherwise enter any number.")
+		
+		chessBoard.print_board()
 		choice = int(input())
 		turn = True
+		
 		while (choice != -1):
 			current_pos = [0,0]
 			new_pos = [0,0]
@@ -140,11 +152,11 @@ class Board:
 			else:
 				print("Black's move")
 	
-			print("Enter the position of the piece you want to move")
+			print("Enter the position of the piece you want to move. Please enter the x-cord on line 1, y-cord on line 2.")
 			current_pos[0] = int(input())
 			current_pos[1] = int(input())
 
-			print("Enter the position you want to move the peice to")
+			print("Enter the position you want to move the peice to. Please enter the x-cord on line 1, y-cord on line 2.")
 			new_pos[0] =  int(input())
 			new_pos[1] = int(input())
 
@@ -157,13 +169,12 @@ class Board:
 			else:
 				print("illegal move")
 			
-			
 			print("Enter -1 to quit, otherwise enter any number")
 			choice = int(input())
             # end of play_game
 
 	def print_board(self):
-        """ Prints the Chessboard """
+		""" Prints the Chessboard """
 		print("-----------------------------------------")
 		for i in range(0, 8):
 			for j in range(0, 8):
@@ -171,12 +182,9 @@ class Board:
 			print("|" + "  " + str(i))
 			print("-----------------------------------------")
 		print("  0    1    2    3    4    5    6    7")
-        # end of print_board
+		# end of print_board
 # End of Board Class
 
 chessBoard = Board()
 chessBoard.set_board()
-chessBoard.print_board()
 chessBoard.play_game()
-
-
